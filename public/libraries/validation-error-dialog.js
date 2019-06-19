@@ -1,22 +1,25 @@
+export class Validation {
+    constructor(){}
 
-function initializeValidationErrorDialog() {
-    $('#validation-dialog-ok').click(handleValidationClose);
-    $('#validation-dialog-close').click(handleValidationClose);
-}
+    initializeValidationErrorDialog() {
+        $('#validation-dialog-ok').click(this.handleValidationClose);
+        $('#validation-dialog-close').click(this.handleValidationClose);
+    }
 
-function handleValidationClose() {
-    $('#dialog-validation-error').modal('hide');
-}
+    handleValidationClose() {
+        $('#dialog-validation-error').modal('hide');
+    }
 
-function showValidationErrorDialog(validations) {
-    const errorDiv = $('#dialog-validation-error-field');
-    errorDiv.empty();
-    _.forEach(validations, function(validation) {
-        $('<h3>' + validation.header + '</h3>').appendTo(errorDiv);
-        const list = $('<ul>');
-        _.forEach(validation.messages, function(f) { $('<li>' + f + '</li>').appendTo(list); });
-        $('</ul>').appendTo(list);
-        list.appendTo(errorDiv);
-    });
-    $('#dialog-validation-error').modal('show');
+    showValidationErrorDialog(validations) {
+        const errorDiv = $('#dialog-validation-error-field');
+        errorDiv.empty();
+        validations.forEach(validation => {
+            $('<h3>' + validation.header + '</h3>').appendTo(errorDiv);
+            const list = $('<ul>');
+            validation.messages.forEach(f => { $('<li>' + f + '</li>').appendTo(list); });
+            $('</ul>').appendTo(list);
+            list.appendTo(errorDiv);
+        });
+        $('#dialog-validation-error').modal('show');
+    }
 }

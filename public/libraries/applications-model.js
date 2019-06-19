@@ -1,5 +1,5 @@
 
-class ApplicationsModel {
+export class ApplicationsModel {
     constructor(applications) {
         this.applications = applications;
     }

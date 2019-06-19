@@ -1,171 +1,183 @@
+import { StepsModel } from 'steps-model';
+import { PipelinesModel } from 'pipelines-model';
+import { ApplicationsModel } from 'applications-model';
+import { SchemasModel } from 'schemas-model';
 
-function loadSteps(callback) {
-    $.getJSON('/api/v1/steps')
-        .done(function(data) {
-            const steps = [];
-            _.forEach(data.steps, function(step) {
-                delete step._id;
-                steps.push(step);
+export class Service {
+    constructor(){
+        this.stepsModel = new StepsModel();
+        this.pipelinesModel = new PipelinesModel();
+        this.applicationsModel = new ApplicationsModel();
+        this.schemasModel = new SchemasModel();
+    }
+
+    loadSteps(callback) {
+        $.getJSON('/api/v1/steps')
+            .done(data => {
+                const steps = [];
+                data.steps.forEach(step => {
+                    delete step._id;
+                    steps.push(step);
+                });
+                this.stepsModel.setSteps(steps);
+                callback(data.steps);
             });
-            stepsModel.setSteps(steps);
-            callback(data.steps);
-        });
-}
-
-function loadPipelines(callback) {
-    $.getJSON('/api/v1/pipelines')
-        .done(function(data) {
-            pipelinesModel.setPipelines(data.pipelines);
-            callback(data.pipelines);
-        });
-}
-
-function loadApplications(callback) {
-    $.getJSON('/api/v1/applications')
-        .done(function(data) {
-            applicationsModel.setApplications(data.applications);
-            callback(data.applications);
-        });
-}
-
-function saveApplication(application, callback) {
-    let type = 'POST';
-    let url = '/api/v1/applications/';
-    if (application.id) {
-        type = 'PUT';
-        url = '/api/v1/applications/' + application.id;
     }
-    $.ajax({
-        type: type,
-        url: url,
-        contentType: "application/json",
-        data: JSON.stringify(application),
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
-        }
-    });
-}
 
-function savePipeline(pipeline, callback) {
-    let type = 'POST';
-    let url = '/api/v1/pipelines/';
-    if (pipeline.id) {
-        type = 'PUT';
-        url = '/api/v1/pipelines/' + pipeline.id;
+    loadPipelines(callback) {
+        $.getJSON('/api/v1/pipelines')
+            .done(data => {
+                this.pipelinesModel.setPipelines(data.pipelines);
+                callback(data.pipelines);
+            });
     }
-    $.ajax({
-        type: type,
-        url: url,
-        contentType: "application/json",
-        data: JSON.stringify(pipeline),
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
-        }
-    });
-}
 
-function deletePipeline(id, callback) {
-    $.ajax({
-        type: 'DELETE',
-        url: '/api/v1/pipelines/' + id,
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
-        }
-    });
-}
-
-function saveBulkSteps(steps, callback) {
-    let body = steps;
-    if (_.isObject(steps)) {
-        body = JSON.stringify(steps);
+    loadApplications(callback) {
+        $.getJSON('/api/v1/applications')
+            .done(data => {
+                this.applicationsModel.setApplications(data.applications);
+                callback(data.applications);
+            });
     }
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/steps/',
-        contentType: "application/json",
-        data: body,
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
-        }
-    });
-}
 
-function saveStep(step, callback) {
-    let type = 'POST';
-    let url = '/api/v1/steps/';
-    if (step.id) {
-        type = 'PUT';
-        url = '/api/v1/steps/' + step.id;
-    }
-    $.ajax({
-        type: type,
-        url: url,
-        contentType: "application/json",
-        data: JSON.stringify(step),
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
+    saveApplication(application, callback) {
+        let type = 'POST';
+        let url = '/api/v1/applications/';
+        if (application.id) {
+            type = 'PUT';
+            url = '/api/v1/applications/' + application.id;
         }
-    });
-}
-function loadSchemas(callback) {
-    $.getJSON('/api/v1/package-objects')
-        .done(function(data) {
-            schemasModel.setSchemas(data['package-objects']);
-            if (callback) {
-                callback();
+        $.ajax({
+            type: type,
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(application),
+            success: data => {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
             }
         });
-}
-
-function saveSchemas(schemas, callback) {
-    let body = schemas;
-    if (_.isObject(schemas)) {
-        body = JSON.stringify(schemas);
     }
-    $.ajax({
-        type: 'POST',
-        url: '/api/v1/package-objects/',
-        contentType: "application/json",
-        data: body,
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req, status, error) {
-            callback({status: status, error: error, response: req.responseJSON});
-        }
-    });
-}
 
-function validateObject(schemaId, obj, callback) {
-    let body = obj;
-    if (_.isObject(obj)) {
-        body = JSON.stringify(obj);
-    }
-    $.ajax({
-        type: 'PATCH',
-        url: '/api/v1/package-objects/' + schemaId + '/validate-object',
-        contentType: "application/json",
-        data: body,
-        success: function(data) {
-            callback(null, data);
-        },
-        error: function (req) {
-            callback(req.responseJSON.error);
+    savePipeline(pipeline, callback) {
+        let type = 'POST';
+        let url = '/api/v1/pipelines/';
+        if (pipeline.id) {
+            type = 'PUT';
+            url = '/api/v1/pipelines/' + pipeline.id;
         }
-    });
+        $.ajax({
+            type: type,
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(pipeline),
+            success: data => {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
+            }
+        });
+    }
+
+    deletePipeline(id, callback) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/v1/pipelines/' + id,
+            success: data => {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
+            }
+        });
+    }
+
+    saveBulkSteps(steps, callback) {
+        if (steps && typeof steps === 'object') {
+            steps = JSON.stringify(steps);
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/steps/',
+            contentType: 'application/json',
+            data: steps,
+            success: data => {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
+            }
+        });
+    }
+
+    saveStep(step, callback) {
+        let type = 'POST';
+        let url = '/api/v1/steps/';
+        if (step.id) {
+            type = 'PUT';
+            url = '/api/v1/steps/' + step.id;
+        }
+        $.ajax({
+            type: type,
+            url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(step),
+            success: data => {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
+            }
+        });
+    }
+
+    loadSchemas(callback) {
+        $.getJSON('/api/v1/package-objects')
+            .done(data => {
+                this.schemasModel.setSchemas(data['package-objects']);
+                if (callback) {
+                    callback();
+                }
+            });
+    }
+
+    saveSchemas(schemas, callback) {
+        if (schemas && typeof schemas === 'object') {
+            schemas = JSON.stringify(schemas);
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/package-objects/',
+            contentType: 'application/json',
+            data: schemas,
+            success: data =>  {
+                callback(null, data);
+            },
+            error: (req, status, error) => {
+                callback({status: status, error: error, response: req.responseJSON});
+            }
+        });
+    }
+
+    validateObject(schemaId, obj, callback) {
+        if (obj && typeof obj === 'object') {
+            obj = JSON.stringify(obj);
+        }
+        $.ajax({
+            type: 'PATCH',
+            url: '/api/v1/package-objects/' + schemaId + '/validate-object',
+            contentType: 'application/json',
+            data: obj,
+            success: data => {
+                callback(null, data);
+            },
+            error: req => {
+                callback(req.responseJSON.error);
+            }
+        });
+    }
+
 }

@@ -27,7 +27,7 @@ const joinStep = {
     params: []
 };
 
-class StepsModel {
+export class StepsModel {
     constructor(steps) {
         this.steps = steps;
     }
@@ -38,22 +38,22 @@ class StepsModel {
 
     getStep(id) {
         if (id === 'join') {
-            return cloneObject(joinStep);
+            return JSON.parse(JSON.stringify(joinStep));
         } else if (id === 'fork') {
-            return cloneObject(forkStep);
+            return JSON.parse(JSON.stringify(forkStep));
         }
-        const step = _.find(this.steps, s => s.id === id);
+        const step = this.steps.find(s => s.id === id);
         if (step) {
-            return cloneObject(step);
+            return JSON.parse(JSON.stringify(step));
         }
         return null;
     }
 
     getSteps(includeFlowControlSteps = false) {
-        const newSteps = cloneObject(this.steps);
+        const newSteps = JSON.parse(JSON.stringify(this.steps));
         if (includeFlowControlSteps) {
-            newSteps.push(cloneObject(forkStep));
-            newSteps.push(cloneObject(joinStep));
+            newSteps.push(JSON.parse(JSON.stringify(forkStep)));
+            newSteps.push(JSON.parse(JSON.stringify(joinStep)));
         }
         return newSteps;
     }

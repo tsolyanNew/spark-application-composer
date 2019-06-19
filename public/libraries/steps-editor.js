@@ -5,6 +5,7 @@ let defaultValues;
 let saveStepName;
 let selectedStep;
 
+
 function initializeStepsEditor() {
     $('#new-step-button').click(handleNewStep);
     $('#reset-step-button').click(handleResetStep);

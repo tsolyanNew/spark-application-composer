@@ -1,38 +1,43 @@
-let newSaveFunction;
-let newCancelFunction;
 
-function initializeNewDialog() {
-    $('#new-form-save').click(handleNewDialogSave);
-    $('#new-form-cancel').click(handleNewDialogCancel);
-    $('#new-form-close').click(handleNewDialogCancel);
-    $('#add-new-id').keypress(function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            handleNewDialogSave();
+export class NewDialog {
+    newSaveFunction;
+    newCancelFunction;
+    constructor(){}
+
+    initializeNewDialog() {
+        $('#new-form-save').click(this.handleNewDialogSave);
+        $('#new-form-cancel').click(this.handleNewDialogCancel);
+        $('#new-form-close').click(this.handleNewDialogCancel);
+        $('#add-new-id').keypress(e =>  {
+            if (e.which === 13) {
+                e.preventDefault();
+                this.handleNewDialogSave();
+            }
+        });
+        $('#dialog-new-form').on('shown.bs.modal', () => {
+            $('#add-new-id').focus();
+        });
+    }
+
+    handleNewDialogSave() {
+        if (this.newSaveFunction) {
+            this.newSaveFunction($('#add-new-id').val());
         }
-    });
-    $('#dialog-new-form').on('shown.bs.modal', function () {
-        $('#add-new-id').focus();
-    });
-}
-
-function handleNewDialogSave() {
-    if (newSaveFunction) {
-        newSaveFunction($('#add-new-id').val());
+        $('#dialog-new-form').modal('hide');
     }
-    $('#dialog-new-form').modal('hide');
-}
 
-function handleNewDialogCancel() {
-    if (newCancelFunction) {
-        newCancelFunction();
+    handleNewDialogCancel() {
+        if (this.newCancelFunction) {
+            this.newCancelFunction();
+        }
+        $('#dialog-new-form').modal('hide');
     }
-    $('#dialog-new-form').modal('hide');
+
+    showNewDialog(saveFunction, cancelFunction) {
+        this.newSaveFunction = saveFunction;
+        this.newCancelFunction = cancelFunction;
+        $('#add-new-id').val('');
+        $('#dialog-new-form').modal('show');
+    }
 }
 
-function showNewDialog(saveFunction, cancelFunction) {
-    newSaveFunction = saveFunction;
-    newCancelFunction = cancelFunction;
-    $('#add-new-id').val('');
-    $('#dialog-new-form').modal('show');
-}

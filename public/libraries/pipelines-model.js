@@ -1,5 +1,5 @@
 
-class PipelinesModel {
+export class PipelinesModel {
     constructor(pipelines) {
         this.pipelines = pipelines;
     }

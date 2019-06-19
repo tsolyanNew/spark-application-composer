@@ -1,13 +1,13 @@
 
-class SchemasModel {
+export class SchemasModel {
     constructor(schemas) {
         this.setSchemas(schemas);
     }
 
     setSchemas(schemas) {
-        this.schemas = _.map(schemas, (schema) => {
+        this.schemas = schemas.map((schema) => {
             delete schema._id;
-            if (_.isString(schema.schema)) {
+            if (typeof schema.schema === 'string') {
                 schema.schema = JSON.parse(schema.schema);
             }
             return schema;
@@ -15,12 +15,12 @@ class SchemasModel {
     }
 
     getSchemas() {
-        return cloneObject(this.schemas);
+        return JSON.parse(JSON.stringify(this.schemas));
     }
 
     getSchema(name) {
-        const schema = _.find(this.schemas, s => s.id === name);
-        return cloneObject(schema);
+        const schema = this.schemas.find(s => s.id === name);
+        return JSON.parse(JSON.stringify(schema));
     }
 
     count() {
