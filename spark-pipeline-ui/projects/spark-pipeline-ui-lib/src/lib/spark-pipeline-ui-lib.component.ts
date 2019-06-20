@@ -1,3 +1,4 @@
+import { SharedService } from './shared/shared.service';
 import { Component, Renderer2, Inject, OnInit } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
@@ -17,11 +18,17 @@ export class SparkPipelineUiLibComponent implements OnInit {
 
   constructor(
     private renderer2: Renderer2,
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private document: any,
+    private sharedService: SharedService,
   ) { }
 
   ngOnInit() {
     this.appendScriptTags();
+    this.callServivce();
+  }
+
+  callServivce() {
+    // this.sharedService.getSteps();
   }
 
   appendScriptTags() {
@@ -58,18 +65,15 @@ export class SparkPipelineUiLibComponent implements OnInit {
       'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/class-override-editor.js',
       'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/graph-editor.js',
       'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/application-editor.js',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/aceeditor/1.4.3/ace.js',
       'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/app.js',
     ];
-    const sTag = this.renderer2.createElement('script');
-    sTag.type = 'text/javascript';
-    sTag.charset = 'utf-8';
-    sTag.src = 'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/libraries/aceeditor/1.4.3/ace.js';
-    this.document.body.appendChild(sTag);
-    console.log('Renderer:', this.renderer2);
     paths.forEach(path => {
       const tag = this.renderer2.createElement('script');
       tag.src = path;
-      this.document.body.appendChild(tag);
+      tag.async = false;
+      const elements = this.document.getElementById('tabs');
+      elements.prepend(tag);
     });
   }
 }
