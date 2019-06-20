@@ -5,14 +5,7 @@ import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'spui-spark-pipeline-ui-lib',
   templateUrl: './spark-pipeline-ui-lib.component.html',
-  styleUrls: [
-            '../public/css/joint.css',
-            '../public/css/bootstrap.min.css',
-            '../public/css/bootstrap-drawer.min.css',
-            '../public/css/bootstrap-tokenfield.css',
-            '../public/css/alpaca.min.css',
-            '../public/css/app.css'
-          ]
+  styleUrls: []
 })
 export class SparkPipelineUiLibComponent implements OnInit {
 
@@ -24,11 +17,31 @@ export class SparkPipelineUiLibComponent implements OnInit {
 
   ngOnInit() {
     this.appendScriptTags();
+    this.appendStyles();
     this.callServivce();
   }
 
   callServivce() {
     // this.sharedService.getSteps();
+  }
+  appendStyles() {
+    const paths = [
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/joint.css',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/bootstrap.min.css',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/bootstrap-drawer.min.css',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/bootstrap-tokenfield.css',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/alpaca.min.css',
+      'http://sparkapplicationcomposeralb-822020478.us-east-1.elb.amazonaws.com:8080/css/app.css',
+    ];
+
+    paths.forEach(path => {
+      const tag = this.renderer2.createElement('link');
+      tag.rel = 'stylesheet';
+      tag.type = 'text/css';
+      tag.href = path;
+      const elements = this.document.getElementById('tabs');
+      elements.prepend(tag);
+    });
   }
 
   appendScriptTags() {
