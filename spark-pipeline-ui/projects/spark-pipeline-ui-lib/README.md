@@ -1,24 +1,40 @@
-# SparkPipelineUiLib
+# Spark Pipeline Ui (spui)
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.
+Angular2 based application mainly used to create, update, delete Spark Pipelines visually.
 
-## Code scaffolding
+For more information about Spark Pipelines go to [Spark-Application-Composer](https://github.com/dafreels/spark-application-composer/blob/master/README.md)
 
-Run `ng generate component component-name --project spark-pipeline-ui-lib` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project spark-pipeline-ui-lib`.
-> Note: Don't forget to add `--project spark-pipeline-ui-lib` or else it will be added to the default project in your `angular.json` file. 
+## Installation
 
-## Build
+The latest release of spui can be installed from npm
 
-Run `ng build spark-pipeline-ui-lib` to build the project. The build artifacts will be stored in the `dist/` directory.
+`npm install --save ng-spui`
 
-## Publishing
+### Getting started
 
-After building your library with `ng build spark-pipeline-ui-lib`, go to the dist folder `cd dist/spark-pipeline-ui-lib` and run `npm publish`.
+Setup `Spark Pipelines UI` in your project
 
-## Running unit tests
+```ts
+// can always find spui in node_modules
+// ====================================
 
-Run `ng test spark-pipeline-ui-lib` to execute the unit tests via [Karma](https://karma-runner.github.io).
+'node_modules/ng-spui'
 
-## Further help
+// How to embeed in Latest Angular Apps
+// =====================================
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+// app.module.ts
+import { SparkPipelineUiLibModule }  from 'ng-spui';
+@NgModule({
+  imports: [
+    ...,
+    SparkPipelineUiLibModule,
+  ],
+  ...
+})
+export class AppModule { }
+
+// Use spui-spark-pipeline-ui-lib tag to inject inside template(.html)
+`<spui-spark-pipeline-ui-lib></spui-spark-pipeline-ui-lib>`
+
+```
